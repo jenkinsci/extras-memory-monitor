@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * Encapsulates how to compute {@link MemoryUsage}. 
+ *
  * @author Kohsuke Kawaguchi
  */
 public abstract class MemoryMonitor {
@@ -30,6 +32,15 @@ public abstract class MemoryMonitor {
 
         if(new File("/proc/meminfo").exists())
             return new ProcMemInfo();   // Linux has this. Exactly since when, I don't know.
+
+        // is 'top' available? if so, use it
+        try {
+            Top top = new Top();
+            top.monitor();
+            return top;
+        } catch (Throwable _) {
+            // fall through next
+        }
 
         throw new IOException("No suitable implementation found");
     }

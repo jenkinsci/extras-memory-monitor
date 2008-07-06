@@ -12,4 +12,9 @@ public class MemoryMonitorTest extends TestCase {
         MemoryUsage data = MemoryMonitor.get().monitor();
         System.out.println(data);
     }
+
+    public void test2() throws IOException {
+        MemoryUsage data = new Top().monitor();
+        System.out.println(data);
+    }
 }
