@@ -32,11 +32,11 @@ final class Top extends MemoryMonitor {
             in.close();
         }
 
-        long[] values = new long[5];
+        long[] values = new long[6];
         Arrays.fill(values,-1);
 
         OUTER:
-        for( int i=0; i<5; i++ ) {
+        for( int i=0; i<PATTERNS.length; i++ ) {
             for( Pattern p : PATTERNS[i] ) {
                 for (String line : lines) {
                     try {
@@ -52,8 +52,11 @@ final class Top extends MemoryMonitor {
             }
         }
 
-        if(values[2]==-1 && values[3]!=-1 && values[4]!=-1)
-            values[2] = values[3]+values[4];
+        // on some system, total=used+free is the only way to obtain the number
+        if(values[0]==-1 && values[1]!=-1 && values[4]!=-1)
+            values[0] = values[1]+values[4];
+        if(values[2]==-1 && values[3]!=-1 && values[5]!=-1)
+            values[2] = values[3]+values[5];
 
         return new MemoryUsage(values);
     }
@@ -76,7 +79,7 @@ final class Top extends MemoryMonitor {
             token = cutTail(token);
         }
 
-        return Long.parseLong(token)*multiplier;
+        return (long)(Float.parseFloat(token)*multiplier);
     }
 
     private static String cutTail(String token) {
@@ -160,37 +163,64 @@ If the inactive memory is cached to disk and is called upon by a process, it wil
 Free memory
 This memory is not being use
 
+
+Mac OS X
+==============================
+% uname -a
+Darwin longhorn.local 8.11.1 Darwin Kernel Version 8.11.1: Wed Oct 10 18:23:28 PDT 2007; root:xnu-792.25.20~1/RELEASE_I386 i386 i386
+[~@longhorn]
+% which top
+/usr/bin/top
+% top
+Processes:  72 total, 2 running, 70 sleeping... 233 threads            20:29:40
+Load Avg:  0.57, 0.67, 0.61     CPU usage:  4.1% user, 9.0% sys, 86.9% idle
+SharedLibs: num =  217, resident = 36.3M code, 4.85M data, 6.28M LinkEdit
+MemRegions: num = 11357, resident = 1.16G + 14.8M private,  166M shared
+PhysMem:   799M wired,  511M active,  535M inactive, 1.80G used,  201M free
+VM: 12.9G +  145M   551748(0) pageins, 382132(0) pageouts
+
+  PID COMMAND      %CPU   TIME   #TH #PRTS #MREGS RPRVT  RSHRD  RSIZE  VSIZE
+13954 top          9.9%  0:07.64   1    18    20   584K   796K  1.03M  27.0M
+13938 pmTool       2.0%  0:04.27   1    22    24   500K  2.25M  3.69M  36.5M
+13937 Activity M   1.4%  0:04.40   2    71   164  5.00M  14.8M  22.1M   381M
+13934 DiskManage   0.0%  0:00.10   1    40    42   604K  2.88M  2.12M  37.2M
 */
 
     private static final Pattern[][] PATTERNS = new Pattern[][] {
         // total phys. memory
         new Pattern[] {
-            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) phys mem"), // Sol10+blastwave
-            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) total"), // Linux
-            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) real") // unixtop.org
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) phys mem"), // Sol10+blastwave
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) total"), // Linux
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) real") // unixtop.org
         },
 
         // available phys. memory
         new Pattern[] {
-            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) free")
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) free"),
+            Pattern.compile("^physmem:.* ([0-9.]+[kmb]) used")  // Mac OS X
         },
 
         // total swap memory
         new Pattern[] {
-            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) swap,"), // Sol10+blastwave
-            Pattern.compile("^swap:.* ([0-9]+[kmb]) total") // Linux
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) swap,"), // Sol10+blastwave
+            Pattern.compile("^swap:.* ([0-9.]+[kmb]) total") // Linux
         },
 
         // available swap memory
         new Pattern[] {
-            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) free swap"), // Sol10+blastwave
-            Pattern.compile("^swap:.* ([0-9]+[kmb]) free"), // Linux
-            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) swap free")  // unixtop
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) free swap"), // Sol10+blastwave
+            Pattern.compile("^swap:.* ([0-9.]+[kmb]) free"), // Linux
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) swap free")  // unixtop
+        },
+
+        // memory in use.
+        new Pattern[] {
+            Pattern.compile("^physmem:.* ([0-9.]+[kmb]) used")  // Mac OS X
         },
 
         // swap in use.
         new Pattern[] {
-            Pattern.compile("^mem(?:ory):.* ([0-9]+[kmb]) swap in use")  // unixtop
+            Pattern.compile("^mem(?:ory):.* ([0-9.]+[kmb]) swap in use")  // unixtop
         }
 
     };
