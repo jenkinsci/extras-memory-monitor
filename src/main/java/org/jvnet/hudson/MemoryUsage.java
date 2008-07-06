@@ -1,13 +1,14 @@
 package org.jvnet.hudson;
 
 import java.io.IOException;
+import java.io.Serializable;
 
 /**
  * Memory usage. Immutable.
  *
  * @author Kohsuke Kawaguchi
  */
-public class MemoryUsage {
+public class MemoryUsage implements Serializable {
     /**
      * Total physical memory of the system, in bytes.
      */
@@ -56,4 +57,6 @@ public class MemoryUsage {
             if(v!=-1)   return true;
         return false;
     }
+
+    private static final long serialVersionUID = 1L;
 }

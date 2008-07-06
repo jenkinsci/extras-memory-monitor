@@ -27,6 +27,12 @@ public abstract class MemoryMonitor {
      *      if no applicable implementation is found.
      */
     public static MemoryMonitor get() throws IOException {
+        if(INSTANCE==null)
+            INSTANCE = obtain();
+        return INSTANCE;
+    }
+
+    private static MemoryMonitor obtain() throws IOException {
         if(File.pathSeparatorChar==';')
             return new Windows();
 
@@ -45,4 +51,5 @@ public abstract class MemoryMonitor {
         throw new IOException("No suitable implementation found");
     }
 
+    private static volatile MemoryMonitor INSTANCE = null;
 }
