@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
  */
 final class Top extends MemoryMonitor {
     public MemoryUsage monitor() throws IOException {
-        ProcessBuilder pb = new ProcessBuilder("top0"/*,"-b" MacOS doesn't understand the -b option*/);
+        ProcessBuilder pb = new ProcessBuilder("top"/*,"-b" MacOS doesn't understand the -b option*/);
         pb.redirectErrorStream(true);
         Process proc = pb.start();
         proc.getOutputStream().close();
@@ -67,15 +67,15 @@ final class Top extends MemoryMonitor {
         if(token.endsWith("b"))
             token = cutTail(token);
         if(token.endsWith("k")) {
-            multiplier = 1024;
+            multiplier = 1024L;
             token = cutTail(token);
         }
         if(token.endsWith("m")) {
-            multiplier = 1024*1024;
+            multiplier = 1024L*1024;
             token = cutTail(token);
         }
         if(token.endsWith("g")) {
-            multiplier = 1024*1024*1024;
+            multiplier = 1024L*1024*1024;
             token = cutTail(token);
         }
 
@@ -189,38 +189,38 @@ VM: 12.9G +  145M   551748(0) pageins, 382132(0) pageouts
     private static final Pattern[][] PATTERNS = new Pattern[][] {
         // total phys. memory
         new Pattern[] {
-            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) phys mem"), // Sol10+blastwave
-            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) total"), // Linux
-            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) real") // unixtop.org
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) phys mem"), // Sol10+blastwave
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) total"), // Linux
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) real") // unixtop.org
         },
 
         // available phys. memory
         new Pattern[] {
-            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) free"),
-            Pattern.compile("^physmem:.* ([0-9.]+[kmb]) used")  // Mac OS X
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) free"),
+            Pattern.compile("^physmem:.* ([0-9.]+[kmgb]) used")  // Mac OS X
         },
 
         // total swap memory
         new Pattern[] {
-            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) swap,"), // Sol10+blastwave
-            Pattern.compile("^swap:.* ([0-9.]+[kmb]) total") // Linux
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) swap,"), // Sol10+blastwave
+            Pattern.compile("^swap:.* ([0-9.]+[kmgb]) total") // Linux
         },
 
         // available swap memory
         new Pattern[] {
-            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) free swap"), // Sol10+blastwave
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) free swap"), // Sol10+blastwave
             Pattern.compile("^swap:.* ([0-9.]+[kmb]) free"), // Linux
-            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmb]) swap free")  // unixtop
+            Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) swap free")  // unixtop
         },
 
         // memory in use.
         new Pattern[] {
-            Pattern.compile("^physmem:.* ([0-9.]+[kmb]) used")  // Mac OS X
+            Pattern.compile("^physmem:.* ([0-9.]+[kmgb]) used")  // Mac OS X
         },
 
         // swap in use.
         new Pattern[] {
-            Pattern.compile("^mem(?:ory):.* ([0-9.]+[kmb]) swap in use")  // unixtop
+            Pattern.compile("^mem(?:ory):.* ([0-9.]+[kmgb]) swap in use")  // unixtop
         }
 
     };
