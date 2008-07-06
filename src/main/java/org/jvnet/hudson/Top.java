@@ -21,12 +21,13 @@ final class Top extends MemoryMonitor {
         proc.getOutputStream().close();
 
         // obtain first 8 lines, then kill 'top'
+        // output is converted to lower case to simplify matching.
         List<String> lines = new ArrayList<String>();
         {
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line;
             while((line=in.readLine())!=null && lines.size()<8)
-                lines.add(line);
+                lines.add(line.toLowerCase());
             proc.destroy();
             in.close();
         }
@@ -58,19 +59,19 @@ final class Top extends MemoryMonitor {
     }
 
     private static long parse(String token) {
-        token = token.trim().toUpperCase();
+        token = token.trim();
         long multiplier = 1;
-        if(token.endsWith("B"))
+        if(token.endsWith("b"))
             token = cutTail(token);
-        if(token.endsWith("K")) {
+        if(token.endsWith("k")) {
             multiplier = 1024;
             token = cutTail(token);
         }
-        if(token.endsWith("M")) {
+        if(token.endsWith("m")) {
             multiplier = 1024*1024;
             token = cutTail(token);
         }
-        if(token.endsWith("G")) {
+        if(token.endsWith("g")) {
             multiplier = 1024*1024*1024;
             token = cutTail(token);
         }
@@ -124,32 +125,32 @@ Memory: 32M real, 724K free, 32M swap in use, 368M swap free
     private static final Pattern[][] PATTERNS = new Pattern[][] {
         // total phys. memory
         new Pattern[] {
-            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) phys mem"), // Sol10+blastwave
-            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) total"), // Linux
-            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) real") // unixtop.org
+            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) phys mem"), // Sol10+blastwave
+            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) total"), // Linux
+            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) real") // unixtop.org
         },
 
         // available phys. memory
         new Pattern[] {
-            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) free")
+            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) free")
         },
 
         // total swap memory
         new Pattern[] {
-            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) swap,"), // Sol10+blastwave
-            Pattern.compile("^Swap:.* ([0-9]+[kmbKMG]) total") // Linux
+            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) swap,"), // Sol10+blastwave
+            Pattern.compile("^swap:.* ([0-9]+[kmb]) total") // Linux
         },
 
         // available swap memory
         new Pattern[] {
-            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) free swap"), // Sol10+blastwave
-            Pattern.compile("^Swap:.* ([0-9]+[kmbKMG]) free"), // Linux
-            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) swap free")  // unixtop
+            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) free swap"), // Sol10+blastwave
+            Pattern.compile("^swap:.* ([0-9]+[kmb]) free"), // Linux
+            Pattern.compile("^mem(?:ory)?:.* ([0-9]+[kmb]) swap free")  // unixtop
         },
 
         // swap in use.
         new Pattern[] {
-            Pattern.compile("^Mem(?:ory):.* ([0-9]+[kmbKMG]) swap in use")  // unixtop
+            Pattern.compile("^mem(?:ory):.* ([0-9]+[kmb]) swap in use")  // unixtop
         }
 
     };
