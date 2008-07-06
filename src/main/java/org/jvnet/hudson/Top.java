@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
  */
 final class Top extends MemoryMonitor {
     public MemoryUsage monitor() throws IOException {
-        ProcessBuilder pb = new ProcessBuilder("top","-b");
+        ProcessBuilder pb = new ProcessBuilder("top0"/*,"-b" MacOS doesn't understand the -b option*/);
         pb.redirectErrorStream(true);
         Process proc = pb.start();
         proc.getOutputStream().close();
@@ -120,6 +120,46 @@ last pid: 15687;  load averages:  0.02,  0.01,  0.01
 76 processes:  74 sleeping, 1 stopped, 1 on cpu
 CPU states: 91.1% idle,  3.8% user,  5.1% kernel,  0.0% iowait,  0.0% swap
 Memory: 32M real, 724K free, 32M swap in use, 368M swap free
+
+
+
+
+From http://www.freebsd.org/doc/en/books/handbook/basics-processes.html
+=======================================
+% top
+last pid: 72257;  load averages:  0.13,  0.09,  0.03    up 0+13:38:33  22:39:10
+47 processes:  1 running, 46 sleeping
+CPU states: 12.6% user,  0.0% nice,  7.8% system,  0.0% interrupt, 79.7% idle
+Mem: 36M Active, 5256K Inact, 13M Wired, 6312K Cache, 15M Buf, 408K Free
+Swap: 256M Total, 38M Used, 217M Free, 15% Inuse
+
+  PID USERNAME PRI NICE  SIZE    RES STATE    TIME   WCPU    CPU COMMAND
+72257 nik       28   0  1960K  1044K RUN      0:00 14.86%  1.42% top
+ 7078 nik        2   0 15280K 10960K select   2:54  0.88%  0.88% xemacs-21.1.14
+  281 nik        2   0 18636K  7112K select   5:36  0.73%  0.73% XF86_SVGA
+  296 nik        2   0  3240K  1644K select   0:12  0.05%  0.05% xterm
+48630 nik        2   0 29816K  9148K select   3:18  0.00%  0.00% navigator-linu
+  175 root       2   0   924K   252K select   1:41  0.00%  0.00% syslogd
+ 7059 nik        2   0  7260K  4644K poll     1:38  0.00%  0.00% mutt
+
+
+The page doesn't include the description of what the memory line really means,
+but http://support.apple.com/kb/HT1342 has some description.
+
+Wired memory
+This information can't be cached to disk, so it must stay in RAM. The amount depends on what applications you are using.
+
+Active memory
+This information is currently in RAM and has recently been used.
+
+Inactive memory
+This information has not recently been used but will remain in RAM until another application needs the space in RAM.  Then, Inactive memory will be cached to disk. Leaving Inactive memory in RAM for as long as possible is to your advantage.  If called upon by a process, it is quickly changed to Active memory.
+
+If the inactive memory is cached to disk and is called upon by a process, it will be returned to RAM and marked as Active memory.
+
+Free memory
+This memory is not being use
+
 */
 
     private static final Pattern[][] PATTERNS = new Pattern[][] {
