@@ -1,13 +1,27 @@
 package org.jvnet.hudson;
 
 /**
+ * Memory usage. Immutable.
+ *
  * @author Kohsuke Kawaguchi
  */
 public class MemoryUsage {
+    /**
+     * Total physical memory of the system, in bytes.
+     */
     public final long totalPhysicalMemory;
+    /**
+     * Of the total physical memory of the system, available bytes.
+     */
     public final long availablePhysicalMemory;
 
+    /**
+     * Total number of swap space in bytes.
+     */
     public final long totalSwapSpace;
+    /**
+     * Available swap space in bytes.
+     */
     public final long availableSwapSpace;
 
     public MemoryUsage(long totalPhysicalMemory, long availablePhysicalMemory, long totalSwapSpace, long availableSwapSpace) {

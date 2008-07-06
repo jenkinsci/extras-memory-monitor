@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.IOException;
 
 /**
+ * Encapsulates how to compute {@link MemoryUsage}. 
+ *
  * @author Kohsuke Kawaguchi
  */
 public abstract class MemoryMonitor {
