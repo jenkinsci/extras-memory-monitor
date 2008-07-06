@@ -37,19 +37,10 @@ final class ProcMemInfo extends MemoryMonitor {
                 }
             }
 
-            if(!hasData(values))
-                throw new IOException("No information found");
-
-            return new MemoryUsage(values[0], values[1], values[2], values[3]);
+            return new MemoryUsage(values);
         } finally {
             r.close();
         }
-    }
-
-    private boolean hasData(long[] values) {
-        for (long v : values)
-            if(v!=-1)   return true;
-        return false;
     }
 
     /**
