@@ -31,11 +31,11 @@ final class Top extends MemoryMonitor {
             in.close();
         }
 
-        long[] values = new long[4];
+        long[] values = new long[5];
         Arrays.fill(values,-1);
 
         OUTER:
-        for( int i=0; i<4; i++ ) {
+        for( int i=0; i<5; i++ ) {
             for( Pattern p : PATTERNS[i] ) {
                 for (String line : lines) {
                     try {
@@ -50,6 +50,9 @@ final class Top extends MemoryMonitor {
                 }
             }
         }
+
+        if(values[2]==-1 && values[3]!=-1 && values[4]!=-1)
+            values[2] = values[3]+values[4];
 
         return new MemoryUsage(values);
     }
@@ -107,31 +110,47 @@ Swap:  4192956k total,   655028k used,  3537928k free,  1171404k cached
  7041 kohsuke   20   0  823m 411m  15m S   97 10.4 675:46.69 VirtualBox
  6606 root      20   0  241m 107m  19m S   12  2.7  16:30.86 Xorg
  6907 kohsuke   20   0  134m  14m 9184 S    2  0.4   0:51.56 metacity
+
+
+
+From http://www.unixtop.org/about.shtml
+=======================================
+last pid: 15687;  load averages:  0.02,  0.01,  0.01
+76 processes:  74 sleeping, 1 stopped, 1 on cpu
+CPU states: 91.1% idle,  3.8% user,  5.1% kernel,  0.0% iowait,  0.0% swap
+Memory: 32M real, 724K free, 32M swap in use, 368M swap free
 */
 
     private static final Pattern[][] PATTERNS = new Pattern[][] {
         // total phys. memory
         new Pattern[] {
-            Pattern.compile("^Memory:.* ([0-9]+[kmbKMG]) phys mem"), // Sol10+blastwave
-            Pattern.compile("^Mem:.* ([0-9]+[kmbKMG]) total") // Linux
+            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) phys mem"), // Sol10+blastwave
+            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) total"), // Linux
+            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) real") // unixtop.org
         },
 
         // available phys. memory
         new Pattern[] {
-            Pattern.compile("^Memory:.* ([0-9]+[kmbKMG]) free mem"), // Sol10+blastwave
-            Pattern.compile("^Mem:.* ([0-9]+[kmbKMG]) free") // Linux
+            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) free")
         },
 
         // total swap memory
         new Pattern[] {
-            Pattern.compile("^Memory:.* ([0-9]+[kmbKMG]) swap"), // Sol10+blastwave
+            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) swap,"), // Sol10+blastwave
             Pattern.compile("^Swap:.* ([0-9]+[kmbKMG]) total") // Linux
         },
 
         // available swap memory
         new Pattern[] {
-            Pattern.compile("^Memory:.* ([0-9]+[kmbKMG]) free swap"), // Sol10+blastwave
-            Pattern.compile("^Swap:.* ([0-9]+[kmbKMG]) free") // Linux
+            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) free swap"), // Sol10+blastwave
+            Pattern.compile("^Swap:.* ([0-9]+[kmbKMG]) free"), // Linux
+            Pattern.compile("^Mem(?:ory)?:.* ([0-9]+[kmbKMG]) swap free")  // unixtop
+        },
+
+        // swap in use.
+        new Pattern[] {
+            Pattern.compile("^Mem(?:ory):.* ([0-9]+[kmbKMG]) swap in use")  // unixtop
         }
+
     };
 }
