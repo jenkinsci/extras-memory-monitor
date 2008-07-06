@@ -197,7 +197,7 @@ VM: 12.9G +  145M   551748(0) pageins, 382132(0) pageouts
         // available phys. memory
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) free"),
-            Pattern.compile("^physmem:.* ([0-9.]+[kmgb]) used")  // Mac OS X
+            Pattern.compile("^physmem:.* ([0-9.]+[kmgb]) free")  // Mac OS X
         },
 
         // total swap memory
