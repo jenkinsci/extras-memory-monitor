@@ -7,9 +7,12 @@ import com.sun.jna.win32.StdCallLibrary;
 /**
  * {@link MemoryMonitor} implementation for Windows.
  *
+ * <p>
+ * JNA requires that the class and interface be public.
+ *
  * @author Kohsuke Kawaguchi
 */
-final class Windows extends MemoryMonitor {
+public final class Windows extends MemoryMonitor {
     public MemoryUsage monitor() {
         MEMORYSTATUSEX mse = new MEMORYSTATUSEX();
         Kernel32.INSTANCE.GlobalMemoryStatusEx(mse);
@@ -20,13 +23,13 @@ final class Windows extends MemoryMonitor {
                 mse.ullTotalPageFile, mse.ullAvailPageFile);
     }
 
-    interface Kernel32 extends StdCallLibrary {
+    public interface Kernel32 extends StdCallLibrary {
         boolean GlobalMemoryStatusEx(MEMORYSTATUSEX p);
 
         Kernel32 INSTANCE = (Kernel32)Native.loadLibrary("kernel32",Kernel32.class);
     }
 
-    static final class MEMORYSTATUSEX extends Structure {
+    public static final class MEMORYSTATUSEX extends Structure {
         public int dwLength = size();
         public int dwMemoryLoad;
         public long ullTotalPhys;
