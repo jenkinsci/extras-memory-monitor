@@ -51,7 +51,7 @@ public class MemoryUsage {
         return l/(1024*1024);
     }
 
-    private static boolean hasData(long[] values) {
+    /*package*/ static boolean hasData(long[] values) {
         for (long v : values)
             if(v!=-1)   return true;
         return false;

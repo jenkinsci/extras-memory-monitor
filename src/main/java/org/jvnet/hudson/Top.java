@@ -14,8 +14,31 @@ import java.util.regex.Matcher;
  * @author Kohsuke Kawaguchi
  */
 final class Top extends MemoryMonitor {
+
+    private boolean plainTopFailed;
+
     public MemoryUsage monitor() throws IOException {
-        ProcessBuilder pb = new ProcessBuilder("top"/*,"-b" MacOS doesn't understand the -b option*/);
+        if(!plainTopFailed) {
+            // MacOS X doesn't understand the -b option (for batch mode),
+            // so first try without any argument. This fails on Ubuntu.
+            MemoryUsage r = monitor("top");
+            if(r!=null) return r;
+
+            // if this failed, don't make the same mistake again
+            plainTopFailed=true;
+        }
+
+        // if 'top' w/o any argument fails to obtain data, like Ubuntu,
+        // then run with the -b option in the hope that it works.
+        MemoryUsage r = monitor("top","-b");
+        if(r!=null) return r;
+
+        // out of luck. bail out
+        throw new IOException("'top' unavailable");
+    }
+
+    private MemoryUsage monitor(String... args) throws IOException {
+        ProcessBuilder pb = new ProcessBuilder(args);
         pb.redirectErrorStream(true);
         Process proc = pb.start();
         proc.getOutputStream().close();
@@ -27,7 +50,7 @@ final class Top extends MemoryMonitor {
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line;
             while((line=in.readLine())!=null && lines.size()<8)
-                lines.add(line.toLowerCase());
+                lines.add(ESCAPE_SEQUENCE.matcher(line.toLowerCase()).replaceAll(""));
             proc.destroy();
             in.close();
         }
@@ -58,7 +81,10 @@ final class Top extends MemoryMonitor {
         if(values[2]==-1 && values[3]!=-1 && values[5]!=-1)
             values[2] = values[3]+values[5];
 
-        return new MemoryUsage(values);
+        if(MemoryUsage.hasData(values))
+            return new MemoryUsage(values);
+        else
+            return null;
     }
 
     private static long parse(String token) {
@@ -222,6 +248,7 @@ VM: 12.9G +  145M   551748(0) pageins, 382132(0) pageouts
         new Pattern[] {
             Pattern.compile("^mem(?:ory):.* ([0-9.]+[kmgb]) swap in use")  // unixtop
         }
-
     };
+
+    private static final Pattern ESCAPE_SEQUENCE = Pattern.compile("\u001B\\[[0-9;]+m");
 }
