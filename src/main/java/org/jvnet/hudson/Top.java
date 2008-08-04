@@ -212,6 +212,7 @@ VM: 12.9G +  145M   551748(0) pageins, 382132(0) pageouts
 13934 DiskManage   0.0%  0:00.10   1    40    42   604K  2.88M  2.12M  37.2M
 */
 
+    // comparison is done by first converting all text t o lower case
     private static final Pattern[][] PATTERNS = new Pattern[][] {
         // total phys. memory
         new Pattern[] {
