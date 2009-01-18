@@ -51,5 +51,12 @@ public abstract class MemoryMonitor {
         throw new IOException("No suitable implementation found");
     }
 
+    /**
+     * Main for test
+     */
+    public static void main(String[] args) throws Exception {
+        System.out.println(get().monitor());
+    }
+
     private static volatile MemoryMonitor INSTANCE = null;
 }
