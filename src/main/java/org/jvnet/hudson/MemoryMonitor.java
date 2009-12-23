@@ -48,6 +48,15 @@ public abstract class MemoryMonitor {
             // fall through next
         }
 
+        // Solaris?
+        try {
+            Solaris solaris = new Solaris();
+            solaris.monitor();
+            return solaris;
+        } catch(Throwable _) {
+            // next
+        }
+
         throw new IOException("No suitable implementation found");
     }
 
@@ -55,7 +64,7 @@ public abstract class MemoryMonitor {
      * Main for test
      */
     public static void main(String[] args) throws Exception {
-        System.out.println(get().monitor());
+        System.out.println(new Solaris().monitor());
     }
 
     private static volatile MemoryMonitor INSTANCE = null;
