@@ -13,7 +13,7 @@ import java.util.regex.Matcher;
  * {@link MemoryMonitor} that parses the output from the <tt>top</tt> command.
  * @author Kohsuke Kawaguchi
  */
-final class Top extends MemoryMonitor {
+final class Top extends AbstractMemoryMonitorImpl {
 
     private boolean plainTopFailed;
 
@@ -85,31 +85,6 @@ final class Top extends MemoryMonitor {
             return new MemoryUsage(values);
         else
             return null;
-    }
-
-    private static long parse(String token) {
-        token = token.trim();
-        long multiplier = 1;
-        if(token.endsWith("b"))
-            token = cutTail(token);
-        if(token.endsWith("k")) {
-            multiplier = 1024L;
-            token = cutTail(token);
-        }
-        if(token.endsWith("m")) {
-            multiplier = 1024L*1024;
-            token = cutTail(token);
-        }
-        if(token.endsWith("g")) {
-            multiplier = 1024L*1024*1024;
-            token = cutTail(token);
-        }
-
-        return (long)(Float.parseFloat(token)*multiplier);
-    }
-
-    private static String cutTail(String token) {
-        return token.substring(0,token.length()-1);
     }
 
 /*

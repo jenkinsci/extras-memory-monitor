@@ -11,19 +11,25 @@ import java.io.Serializable;
 public class MemoryUsage implements Serializable {
     /**
      * Total physical memory of the system, in bytes.
+     * -1 if unknown.
      */
     public final long totalPhysicalMemory;
+
     /**
      * Of the total physical memory of the system, available bytes.
+     * -1 if unknown.
      */
     public final long availablePhysicalMemory;
 
     /**
      * Total number of swap space in bytes.
+     * -1 if unknown.
      */
     public final long totalSwapSpace;
+
     /**
      * Available swap space in bytes.
+     * -1 if unknown.
      */
     public final long availableSwapSpace;
 
