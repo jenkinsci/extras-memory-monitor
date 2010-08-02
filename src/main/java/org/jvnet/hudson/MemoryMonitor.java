@@ -57,7 +57,8 @@ public abstract class MemoryMonitor {
             // next
         }
 
-        throw new IOException("No suitable implementation found");
+        throw new IOException(String.format("No suitable implementation found: os.name=%s os.arch=%s sun.arch.data.model=%s",
+                System.getProperty("os.name"),System.getProperty("os.arch"),System.getProperty("sun.arch.data.model")));
     }
 
     /**
