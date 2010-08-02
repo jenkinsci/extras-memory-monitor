@@ -8,7 +8,7 @@
 
   <groupId>org.jvnet.hudson</groupId>
   <artifactId>memory-monitor</artifactId>
-  <version>1.3</version>
+  <version>1.4-SNAPSHOT</version>
 
   <name>memory-monitor</name>
   <description>Code for monitoring memory/swap usage</description>
@@ -62,10 +62,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <scm>
-    <connection>scm:svn:https://guest@svn.dev.java.net/svn/hudson/tags/memory-monitor-1.3</connection>
-    <developerConnection>scm:svn:https://svn.dev.java.net/svn/hudson/tags/memory-monitor-1.3</developerConnection>
-    <url>https://hudson.dev.java.net/source/browse/hudson/tags/memory-monitor-1.3</url>
-  </scm>
 </project>
