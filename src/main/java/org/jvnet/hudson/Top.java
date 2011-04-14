@@ -15,9 +15,22 @@ import java.util.regex.Matcher;
  */
 final class Top extends AbstractMemoryMonitorImpl {
 
+    private boolean macOsTopFailed;
     private boolean plainTopFailed;
 
     public MemoryUsage monitor() throws IOException {
+        if(!macOsTopFailed) {
+            // MacOS X doesn't understand the -b option (for batch mode),
+            // moreover to run it in a non-terminal one needs to use the "-l1" option
+            // and to view the swap usage also add the "-S" option.
+            // This fails probably anywhere except on MacOS X.
+            MemoryUsage r = monitor("top","-S","-l1");
+            if(r!=null) return r;
+
+            // if this failed, don't make the same mistake again
+            macOsTopFailed=true;
+        }
+
         if(!plainTopFailed) {
             // MacOS X doesn't understand the -b option (for batch mode),
             // so first try without any argument. This fails on Ubuntu.
@@ -43,13 +56,13 @@ final class Top extends AbstractMemoryMonitorImpl {
         Process proc = pb.start();
         proc.getOutputStream().close();
 
-        // obtain first 8 lines, then kill 'top'
+        // obtain first 9 lines, then kill 'top'
         // output is converted to lower case to simplify matching.
         List<String> lines = new ArrayList<String>();
         {
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line;
-            while((line=in.readLine())!=null && lines.size()<8)
+            while((line=in.readLine())!=null && lines.size()<9)
                 lines.add(ESCAPE_SEQUENCE.matcher(line.toLowerCase()).replaceAll(""));
             proc.destroy();
             in.close();
@@ -185,6 +198,29 @@ VM: 12.9G +  145M   551748(0) pageins, 382132(0) pageouts
 13938 pmTool       2.0%  0:04.27   1    22    24   500K  2.25M  3.69M  36.5M
 13937 Activity M   1.4%  0:04.40   2    71   164  5.00M  14.8M  22.1M   381M
 13934 DiskManage   0.0%  0:00.10   1    40    42   604K  2.88M  2.12M  37.2M
+
+% uname -a
+Darwin longhorn.local 10.7.0 Darwin Kernel Version 10.7.0: Sat Jan 29 15:17:16 PST 2011; root:xnu-1504.9.37~1/RELEASE_I386 i386
+[~@longhorn]
+% which top
+/usr/bin/top
+% top -S -l1
+Processes: 119 total, 2 running, 117 sleeping, 632 threads
+2011/04/13 21:52:58
+Load Avg: 0.50, 0.66, 0.54
+CPU usage: 16.0% user, 44.0% sys, 40.0% idle
+SharedLibs: 3472K resident, 4544K data, 0B linkedit.
+MemRegions: 33714 total, 2673M resident, 23M private, 315M shared.
+PhysMem: 648M wired, 2299M active, 1097M inactive, 4044M used, 50M free.
+VM: 277G vsize, 1036M framework vsize, 2051180(0) pageins, 984516(0) pageouts.
+Swap: 5362M + 782M free.
+Purgeable: 43M 17700(0) pages purged.
+Networks: packets: 4279614/3741M in, 3985478/2010M out.
+Disks: 3633101/38G read, 4162531/94G written.
+
+PID    COMMAND          %CPU TIME     #TH  #WQ #PORTS #MREGS RPRVT  RSHRD  RSIZE  VPRVT  VSIZE  PGRP  PPID  STATE    UID FAULTS    COW      MSGSENT    MSGRECV    SYSBSD    SYSMACH    CSW        PAGEINS USER
+31496  top              0.0  00:00.13 1/1  0   21+    32+    1004K+ 336K+  1540K+ 17M+   2378M+ 31496 30986 running  0   1615+     52+      74693+     37346+     489+      37492+     13+        0       root
+31493  taskgated        0.0  00:00.00 2    0   25+    28+    428K+  324K+  1000K+ 27M+   2387M+ 31493 1     sleeping 0   380+      62+      140+       60+        176+      109+       23+        0       root
 */
 
     // comparison is done by first converting all text to lower case
@@ -212,6 +248,7 @@ VM: 12.9G +  145M   551748(0) pageins, 382132(0) pageouts
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) free swap"), // Sol10+blastwave
             Pattern.compile("^swap:.* ([0-9.]+[kmb]) free"), // Linux
+            Pattern.compile("^swap:\\w* (?:[0-9.]+[kmb])\\w* \\+ \\w*([0-9.]+[kmb]) free"), // Mac OS
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) swap free")  // unixtop
         },
 
@@ -222,7 +259,8 @@ VM: 12.9G +  145M   551748(0) pageins, 382132(0) pageouts
 
         // swap in use.
         new Pattern[] {
-            Pattern.compile("^mem(?:ory):.* ([0-9.]+[kmgb]) swap in use")  // unixtop
+            Pattern.compile("^mem(?:ory):.* ([0-9.]+[kmgb]) swap in use"),  // unixtop
+            Pattern.compile("^swap:\\w* ([0-9.]+[kmb])\\w* \\+ \\w*(?:[0-9.]+[kmb]) free"), // Mac OS
         }
     };
 
