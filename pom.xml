@@ -1,12 +1,11 @@
 <?xml version="1.0"?><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <parent>
-    <artifactId>extras</artifactId>
-    <groupId>org.jvnet.hudson</groupId>
-    <version>1.7</version>
+    <groupId>org.jenkins-ci</groupId>
+    <artifactId>jenkins</artifactId>
+    <version>1.12</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.jvnet.hudson</groupId>
   <artifactId>memory-monitor</artifactId>
   <version>1.4-SNAPSHOT</version>
 
@@ -62,4 +61,24 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
+  <licenses>
+    <license>
+      <name>MIT License</name>
+      <url>http://jenkins-ci.org/mit-license</url>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:git://github.com/jenkinsci/extras-memory-monitor.git</connection>
+    <developerConnection>scm:git:git@github.com:jenkinsci/extras-memory-monitor.git</developerConnection>
+    <url>https://github.com/jenkinsci/extras-memory-monitor</url>
+  </scm>
+
+  <repositories>
+    <repository>
+      <id>m.g.o-public</id>
+      <url>http://maven.glassfish.org/content/groups/public/</url>
+    </repository>
+  </repositories>
 </project>
