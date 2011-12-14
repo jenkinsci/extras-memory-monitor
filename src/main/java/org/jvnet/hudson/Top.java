@@ -79,13 +79,13 @@ final class Top extends AbstractMemoryMonitorImpl {
         Process proc = pb.start();
         proc.getOutputStream().close();
 
-        // obtain first 9 lines, then kill 'top'
+        // obtain first 16 lines, then kill 'top'
         // output is converted to lower case to simplify matching.
         List<String> lines = new ArrayList<String>();
         {
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line;
-            while((line=in.readLine())!=null && lines.size()<9)
+            while((line=in.readLine())!=null && lines.size()<16)
                 lines.add(ESCAPE_SEQUENCE.matcher(line.toLowerCase()).replaceAll(""));
             proc.destroy();
             in.close();

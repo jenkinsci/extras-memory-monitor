@@ -88,7 +88,7 @@ public abstract class MemoryMonitor {
      * Main for test
      */
     public static void main(String[] args) throws Exception {
-        System.out.println(new Solaris().monitor());
+        System.out.println(get().monitor());
     }
 
     private static volatile MemoryMonitor INSTANCE = null;
