@@ -29,6 +29,7 @@ import java.io.BufferedReader;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.logging.Logger;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -51,6 +52,7 @@ final class Top extends AbstractMemoryMonitorImpl {
             if(r!=null) return r;
 
             // if this failed, don't make the same mistake again
+            LOGGER.fine("failed: top -S -l1");
             macOsTopFailed=true;
         }
 
@@ -61,6 +63,7 @@ final class Top extends AbstractMemoryMonitorImpl {
             if(r!=null) return r;
 
             // if this failed, don't make the same mistake again
+            LOGGER.fine("failed: top");
             plainTopFailed=true;
         }
 
@@ -69,6 +72,8 @@ final class Top extends AbstractMemoryMonitorImpl {
         MemoryUsage r = monitor("top","-b");
         if(r!=null) return r;
 
+        LOGGER.fine("failed: top -b");
+        
         // out of luck. bail out
         throw new IOException("'top' unavailable");
     }
@@ -85,8 +90,11 @@ final class Top extends AbstractMemoryMonitorImpl {
         {
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
             String line;
-            while((line=in.readLine())!=null && lines.size()<16)
-                lines.add(ESCAPE_SEQUENCE.matcher(line.toLowerCase()).replaceAll(""));
+            while((line=in.readLine())!=null && lines.size()<16) {
+                line = ESCAPE_SEQUENCE.matcher(line.toLowerCase()).replaceAll("");
+                LOGGER.fine("| "+line);
+                lines.add(line);
+            }
             proc.destroy();
             in.close();
         }
@@ -288,4 +296,6 @@ PID    COMMAND          %CPU TIME     #TH  #WQ #PORTS #MREGS RPRVT  RSHRD  RSIZE
     };
 
     private static final Pattern ESCAPE_SEQUENCE = Pattern.compile("\u001B\\[[0-9;]+m");
+
+    private static final Logger LOGGER = Logger.getLogger(Top.class.getName());
 }
