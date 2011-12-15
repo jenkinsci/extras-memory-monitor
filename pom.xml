@@ -7,7 +7,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <artifactId>memory-monitor</artifactId>
-  <version>1.7-SNAPSHOT</version>
+  <version>1.7</version>
 
   <name>memory-monitor</name>
   <description>Code for monitoring memory/swap usage</description>
