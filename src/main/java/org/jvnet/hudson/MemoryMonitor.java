@@ -25,6 +25,9 @@ package org.jvnet.hudson;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Encapsulates how to compute {@link MemoryUsage}. 
@@ -61,14 +64,12 @@ public abstract class MemoryMonitor {
 
         if(new File("/proc/meminfo").exists())
             return new ProcMemInfo();   // Linux has this. Exactly since when, I don't know.
-
         final String osName = System.getProperty("os.name");
         if("AIX".equals(osName)){
             Aix aix = new Aix();
             aix.monitor();
             return aix;
         }
-        
         // is 'top' available? if so, use it
         try {
             Top top = new Top();
@@ -77,7 +78,7 @@ public abstract class MemoryMonitor {
         } catch (Throwable _) {
             // fall through next
         }
-        
+
         // Solaris?
         try {
             Solaris solaris = new Solaris();
@@ -86,15 +87,24 @@ public abstract class MemoryMonitor {
         } catch(Throwable _) {
             // next
         }
+
         throw new IOException(String.format("No suitable implementation found: os.name=%s os.arch=%s sun.arch.data.model=%s",
-                osName,System.getProperty("os.arch"),System.getProperty("sun.arch.data.model")));
+                System.getProperty("os.name"),System.getProperty("os.arch"),System.getProperty("sun.arch.data.model")));
     }
 
     /**
      * Main for test
      */
     public static void main(String[] args) throws Exception {
-        System.out.println(get().monitor());
+        Logger l = Logger.getLogger(MemoryMonitor.class.getPackage().getName());
+        l.setLevel(Level.FINE);
+        ConsoleHandler h = new ConsoleHandler();
+        h.setLevel(Level.FINE);
+        l.addHandler(h);
+
+        MemoryMonitor t = get();
+        System.out.println("implementation is "+t.getClass().getName());
+        System.out.println(t.monitor());
     }
 
     private static volatile MemoryMonitor INSTANCE = null;
