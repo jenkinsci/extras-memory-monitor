@@ -65,6 +65,13 @@ public abstract class MemoryMonitor {
         if(new File("/proc/meminfo").exists())
             return new ProcMemInfo();   // Linux has this. Exactly since when, I don't know.
 
+        final String osName = System.getProperty("os.name");
+        if("AIX".equals(osName)){
+            Aix aix = new Aix();
+            aix.monitor();
+            return aix;
+        }
+        
         // is 'top' available? if so, use it
         try {
             Top top = new Top();
@@ -73,7 +80,7 @@ public abstract class MemoryMonitor {
         } catch (Throwable _) {
             // fall through next
         }
-
+        
         // Solaris?
         try {
             Solaris solaris = new Solaris();
@@ -82,9 +89,8 @@ public abstract class MemoryMonitor {
         } catch(Throwable _) {
             // next
         }
-
         throw new IOException(String.format("No suitable implementation found: os.name=%s os.arch=%s sun.arch.data.model=%s",
-                System.getProperty("os.name"),System.getProperty("os.arch"),System.getProperty("sun.arch.data.model")));
+                osName,System.getProperty("os.arch"),System.getProperty("sun.arch.data.model")));
     }
 
     /**
