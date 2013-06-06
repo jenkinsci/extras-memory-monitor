@@ -1,19 +1,19 @@
 package org.jvnet.hudson;
 
-import junit.framework.TestCase;
-
 import java.io.IOException;
+import org.junit.Test;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-public class MemoryMonitorTest extends TestCase {
-    public void test1() throws IOException {
+public class MemoryMonitorTest {
+
+    @Test public void monitor() throws IOException {
         MemoryUsage data = MemoryMonitor.get().monitor();
         System.out.println(data);
     }
 
-    public void test2() throws IOException {
+    @Test public void top() throws IOException {
         MemoryUsage data = new Top().monitor();
         System.out.println(data);
     }
