@@ -25,9 +25,6 @@ package org.jvnet.hudson;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Encapsulates how to compute {@link MemoryUsage}. 
@@ -97,15 +94,7 @@ public abstract class MemoryMonitor {
      * Main for test
      */
     public static void main(String[] args) throws Exception {
-        Logger l = Logger.getLogger(MemoryMonitor.class.getPackage().getName());
-        l.setLevel(Level.FINE);
-        ConsoleHandler h = new ConsoleHandler();
-        h.setLevel(Level.FINE);
-        l.addHandler(h);
-
-        MemoryMonitor t = get();
-        System.out.println("implementation is "+t.getClass().getName());
-        System.out.println(t.monitor());
+        System.out.println(get().monitor());
     }
 
     private static volatile MemoryMonitor INSTANCE = null;
