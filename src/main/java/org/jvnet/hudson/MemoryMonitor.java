@@ -64,7 +64,12 @@ public abstract class MemoryMonitor {
 
         if(new File("/proc/meminfo").exists())
             return new ProcMemInfo();   // Linux has this. Exactly since when, I don't know.
-
+        final String osName = System.getProperty("os.name");
+        if("AIX".equals(osName)){
+            Aix aix = new Aix();
+            aix.monitor();
+            return aix;
+        }
         // is 'top' available? if so, use it
         try {
             Top top = new Top();
