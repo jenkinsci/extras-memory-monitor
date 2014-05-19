@@ -109,7 +109,13 @@ final class Top extends AbstractMemoryMonitorImpl {
                     try {
                         Matcher m = p.matcher(line);
                         if(m.find()) {
-                            values[i] = parse(m.group(1));
+                            if (m.groupCount() == 2) {
+                               // Deal with later versions of procps
+                               // which split KMG from values
+                               values[i] = parse(m.group(2) + m.group(1));
+                            } else {
+                               values[i] = parse(m.group(1));
+                            }
                             continue OUTER;
                         }
                     } catch (NumberFormatException e) {
@@ -161,6 +167,32 @@ Swap:  4192956k total,   655028k used,  3537928k free,  1171404k cached
  6907 kohsuke   20   0  134m  14m 9184 S    2  0.4   0:51.56 metacity
 
 
+On Debian Sid 21/02/2012
+====================================
+uname -a && which top && top -b | head
+Linux hendrix 3.2.0-17-generic #26-Ubuntu SMP Fri Feb 17 21:35:49 UTC 2012 x86_64 GNU/Linux
+/usr/bin/top
+top - 11:09:11 up 20:10,  0 users,  load average: 0.21, 0.32, 0.28
+Tasks: 248 total,   1 running, 244 sleeping,   0 stopped,   3 zombie
+%Cpu(s):  4.0 us,  0.5 sy,  0.0 ni, 95.4 id,  0.1 wa,  0.0 hi,  0.0 si,  0.0 st
+Kb Mem:   3980580 total,  3266708 used,   713872 free,    66592 buffers
+Kb Swap:  4124668 total,   121968 used,  4002700 free,   390988 cached
+
+  PID USER      PR  NI  VIRT  RES  SHR S  %CPU %MEM    TIME+  COMMAND
+ 1501 root      20   0  595m 186m 129m S  12.4  4.8  44:02.25 Xorg
+ 2498 jamespag  20   0 1891m 658m  20m S   6.2 16.9  25:06.72 compiz
+21823 jamespag  20   0 23760 1508 1072 R   6.2  0.0   0:00.01 top
+
+MEMORY Usage
+This portion consists of two lines which may express values in kilobytes (Kb), megabytes (Mb) 
+or gigabytes (Gb)  depending  on  the  amount  of  currently
+installed physical memory.
+
+Line 1 reflects physical memory, classified as:
+    total, used, free, buffers
+
+Line 2 reflects virtual memory, classified as:
+    total, used, free, cached
 
 From http://www.unixtop.org/about.shtml
 =======================================
@@ -260,25 +292,29 @@ PID    COMMAND          %CPU TIME     #TH  #WQ #PORTS #MREGS RPRVT  RSHRD  RSIZE
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) phys mem"), // Sol10+blastwave
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) total"), // Linux
+            Pattern.compile("^([kmg])b mem(?:ory)?:.* ([0-9.]+) total"), // Linux procps (>= 3.3)
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) real") // unixtop.org
         },
 
         // available phys. memory
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) free"),
+            Pattern.compile("^([kmg])b mem(?:ory)?:.* ([0-9.]+) free"), // Linux procps (>= 3.3)
             Pattern.compile("^physmem:.* ([0-9.]+[kmgb]) free")  // Mac OS X
         },
 
         // total swap memory
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) swap,"), // Sol10+blastwave
-            Pattern.compile("^swap:.* ([0-9.]+[kmgb]) total") // Linux
+            Pattern.compile("^swap:.* ([0-9.]+[kmgb]) total"), // Linux
+            Pattern.compile("^([kmg])b swap:.* ([0-9.]+) total") // Linux procps (>= 3.3)
         },
 
         // available swap memory
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) free swap"), // Sol10+blastwave
             Pattern.compile("^swap:.* ([0-9.]+[kmb]) free"), // Linux
+            Pattern.compile("^([kmg])b swap:.* ([0-9.]+) free"), // Linux procps (>= 3.3)
             Pattern.compile("^swap:\\w* (?:[0-9.]+[kmb])\\w* \\+ \\w*([0-9.]+[kmb]) free"), // Mac OS
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) swap free")  // unixtop
         },
