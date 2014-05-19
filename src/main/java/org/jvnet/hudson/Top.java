@@ -292,14 +292,14 @@ PID    COMMAND          %CPU TIME     #TH  #WQ #PORTS #MREGS RPRVT  RSHRD  RSIZE
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) phys mem"), // Sol10+blastwave
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) total"), // Linux
-            Pattern.compile("^([kmg])b mem(?:ory)?:.* ([0-9.]+) total"), // Linux procps (>= 3.3)
+            Pattern.compile("^([kmg])i?b mem(?:ory)?:.* ([0-9.]+) total"), // Linux procps (>= 3.3)
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) real") // unixtop.org
         },
 
         // available phys. memory
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) free"),
-            Pattern.compile("^([kmg])b mem(?:ory)?:.* ([0-9.]+) free"), // Linux procps (>= 3.3)
+            Pattern.compile("^([kmg])i?b mem(?:ory)?:.* ([0-9.]+) free"), // Linux procps (>= 3.3)
             Pattern.compile("^physmem:.* ([0-9.]+[kmgb]) free")  // Mac OS X
         },
 
@@ -307,14 +307,14 @@ PID    COMMAND          %CPU TIME     #TH  #WQ #PORTS #MREGS RPRVT  RSHRD  RSIZE
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) swap,"), // Sol10+blastwave
             Pattern.compile("^swap:.* ([0-9.]+[kmgb]) total"), // Linux
-            Pattern.compile("^([kmg])b swap:.* ([0-9.]+) total") // Linux procps (>= 3.3)
+            Pattern.compile("^([kmg])i?b swap:.* ([0-9.]+) total") // Linux procps (>= 3.3)
         },
 
         // available swap memory
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) free swap"), // Sol10+blastwave
             Pattern.compile("^swap:.* ([0-9.]+[kmb]) free"), // Linux
-            Pattern.compile("^([kmg])b swap:.* ([0-9.]+) free"), // Linux procps (>= 3.3)
+            Pattern.compile("^([kmg])i?b swap:.* ([0-9.]+) free"), // Linux procps (>= 3.3)
             Pattern.compile("^swap:\\w* (?:[0-9.]+[kmb])\\w* \\+ \\w*([0-9.]+[kmb]) free"), // Mac OS
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) swap free")  // unixtop
         },
