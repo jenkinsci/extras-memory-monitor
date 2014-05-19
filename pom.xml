@@ -8,7 +8,7 @@
   </parent>
 
   <artifactId>memory-monitor</artifactId>
-  <version>1.8-SNAPSHOT</version>
+  <version>1.8</version>
 
   <name>Memory Monitor</name>
   <description>Code for monitoring memory/swap usage</description>
@@ -74,6 +74,7 @@
     <connection>scm:git:git://github.com/jenkinsci/extras-memory-monitor.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/extras-memory-monitor.git</developerConnection>
     <url>https://github.com/jenkinsci/extras-memory-monitor</url>
+    <tag>memory-monitor-1.8</tag>
   </scm>
 
   <repositories>
