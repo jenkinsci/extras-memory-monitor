@@ -331,10 +331,6 @@ PID    COMMAND          %CPU TIME     #TH  #WQ #PORTS #MREGS RPRVT  RSHRD  RSIZE
         }
     };
 
-    // XXX Ubuntu 13.04 does not match:
-    // kib mem:   6093460 total,  5105444 used,   988016 free,   305572 buffers
-    // kib swap:        0 total,        0 used,        0 free,  1993740 cached
-
     private static final Pattern ESCAPE_SEQUENCE = Pattern.compile("\u001B\\[[0-9;]+m");
 
     private static final Logger LOGGER = Logger.getLogger(Top.class.getName());
