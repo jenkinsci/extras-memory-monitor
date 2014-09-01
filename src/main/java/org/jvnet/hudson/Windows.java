@@ -26,6 +26,8 @@ package org.jvnet.hudson;
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.win32.StdCallLibrary;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * {@link MemoryMonitor} implementation for Windows.
@@ -62,5 +64,12 @@ public final class Windows extends MemoryMonitor {
         public long ullTotalVirtual;
         public long ullAvailVirtual;
         public long ullAvailExtendedVirtual;
-    }
+
+        @Override
+        protected List getFieldOrder() {
+            return Arrays.asList("dwLength", "dwMemoryLoad", "ullTotalPhys",
+                "ullAvailPhys", "ullTotalPageFile", "ullAvailPageFile",
+                "ullTotalVirtual", "ullAvailVirtual", "ullAvailExtendedVirtual");
+        }
+    }  
 }
