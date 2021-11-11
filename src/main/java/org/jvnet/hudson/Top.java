@@ -26,6 +26,7 @@ package org.jvnet.hudson;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -88,7 +89,7 @@ final class Top extends AbstractMemoryMonitorImpl {
         // output is converted to lower case to simplify matching.
         List<String> lines = new ArrayList<String>();
         {
-            BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
             String line;
             while((line=in.readLine())!=null && lines.size()<16) {
                 line = ESCAPE_SEQUENCE.matcher(line.toLowerCase()).replaceAll("");

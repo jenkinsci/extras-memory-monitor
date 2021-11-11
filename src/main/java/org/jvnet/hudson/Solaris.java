@@ -26,6 +26,7 @@ package org.jvnet.hudson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -48,7 +49,7 @@ public class Solaris extends AbstractMemoryMonitorImpl {
 
     private long getTotalPhysicalMemory() throws IOException {
         Process proc = startProcess("/usr/sbin/prtdiag");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
         try {
             String line;
             while ((line=r.readLine())!=null) {
@@ -65,7 +66,7 @@ public class Solaris extends AbstractMemoryMonitorImpl {
 
     private long getAvailablePhysicalMemory() throws IOException {
         Process proc = startProcess("vmstat");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
         try {
             String line;
             while ((line=r.readLine())!=null) {
@@ -85,7 +86,7 @@ public class Solaris extends AbstractMemoryMonitorImpl {
     private long[] getSwap() throws IOException {
         long[] v = new long[]{-1,-1};
         Process proc = startProcess("/usr/sbin/swap","-s");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
         /* output
 
             $ uname -a; swap -s

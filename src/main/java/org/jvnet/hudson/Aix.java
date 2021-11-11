@@ -26,6 +26,7 @@ package org.jvnet.hudson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -53,7 +54,7 @@ public class Aix extends AbstractMemoryMonitorImpl {
     private long[] getSwap() throws IOException {
         long[] v = new long[] { -1, -1 };
         Process proc = startProcess("lsps", "-s");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
         /*
      $ lsps -s
 Total Paging Space   Percent Used
@@ -95,7 +96,7 @@ Total Paging Space   Percent Used
     private long[] getMemUsed() throws IOException {
         long[] v = new long[] { -1, -1 };
         Process proc = startProcess("vmstat");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream()));
+        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
         /*
 $ vmstat
 
