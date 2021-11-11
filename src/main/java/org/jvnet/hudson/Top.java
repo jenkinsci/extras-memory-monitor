@@ -43,6 +43,7 @@ final class Top extends AbstractMemoryMonitorImpl {
     private boolean macOsTopFailed;
     private boolean plainTopFailed;
 
+    @Override
     public MemoryUsage monitor() throws IOException {
         if(!macOsTopFailed) {
             // MacOS X doesn't understand the -b option (for batch mode),
@@ -87,7 +88,7 @@ final class Top extends AbstractMemoryMonitorImpl {
 
         // obtain first 16 lines, then kill 'top'
         // output is converted to lower case to simplify matching.
-        List<String> lines = new ArrayList<String>();
+        List<String> lines = new ArrayList<>();
         {
             BufferedReader in = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
             String line;

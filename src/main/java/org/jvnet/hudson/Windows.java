@@ -38,6 +38,7 @@ import java.util.List;
  * @author Kohsuke Kawaguchi
 */
 public final class Windows extends MemoryMonitor {
+    @Override
     public MemoryUsage monitor() {
         MEMORYSTATUSEX mse = new MEMORYSTATUSEX();
         Kernel32.INSTANCE.GlobalMemoryStatusEx(mse);
@@ -51,7 +52,7 @@ public final class Windows extends MemoryMonitor {
     public interface Kernel32 extends StdCallLibrary {
         boolean GlobalMemoryStatusEx(MEMORYSTATUSEX p);
 
-        Kernel32 INSTANCE = (Kernel32)Native.loadLibrary("kernel32",Kernel32.class);
+        Kernel32 INSTANCE = Native.loadLibrary("kernel32",Kernel32.class);
     }
 
     public static final class MEMORYSTATUSEX extends Structure {
@@ -66,7 +67,7 @@ public final class Windows extends MemoryMonitor {
         public long ullAvailExtendedVirtual;
 
         @Override
-        protected List getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Arrays.asList("dwLength", "dwMemoryLoad", "ullTotalPhys",
                 "ullAvailPhys", "ullTotalPageFile", "ullAvailPageFile",
                 "ullTotalVirtual", "ullAvailVirtual", "ullAvailExtendedVirtual");

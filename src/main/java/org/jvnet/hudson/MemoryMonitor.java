@@ -75,7 +75,7 @@ public abstract class MemoryMonitor {
             Top top = new Top();
             top.monitor();
             return top;
-        } catch (Throwable _) {
+        } catch (Throwable t) {
             // fall through next
         }
 
@@ -84,7 +84,7 @@ public abstract class MemoryMonitor {
             Solaris solaris = new Solaris();
             solaris.monitor();
             return solaris;
-        } catch(Throwable _) {
+        } catch(Throwable t) {
             // next
         }
 
