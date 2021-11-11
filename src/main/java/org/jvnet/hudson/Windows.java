@@ -26,6 +26,9 @@ package org.jvnet.hudson;
 import com.sun.jna.Native;
 import com.sun.jna.Structure;
 import com.sun.jna.win32.StdCallLibrary;
+
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -55,6 +58,12 @@ public final class Windows extends MemoryMonitor {
         Kernel32 INSTANCE = Native.loadLibrary("kernel32",Kernel32.class);
     }
 
+    @SuppressFBWarnings(
+            value = {
+                "URF_UNREAD_PUBLIC_OR_PROTECTED_FIELD",
+                "UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"
+            },
+            justification = "JNA Data Structure")
     public static final class MEMORYSTATUSEX extends Structure {
         public int dwLength = size();
         public int dwMemoryLoad;

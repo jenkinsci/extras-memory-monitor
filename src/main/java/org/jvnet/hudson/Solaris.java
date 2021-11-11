@@ -87,7 +87,12 @@ public class Solaris extends AbstractMemoryMonitorImpl {
             total: 800296k bytes allocated + 181784k reserved = 982080k used, 6014528k available
           */
         try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
-            String line = r.readLine().toLowerCase();
+            String line = r.readLine();
+            if (line == null) {
+                throw new IOException("no output from /usr/sbin/swap -s");
+            } else {
+                line = line.toLowerCase();
+            }
 
             Matcher m = USED_SWAP.matcher(line);
             if (m.find()) {

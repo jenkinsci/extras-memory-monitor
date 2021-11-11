@@ -23,6 +23,8 @@
  */
 package org.jvnet.hudson;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.ConsoleHandler;
@@ -95,6 +97,9 @@ public abstract class MemoryMonitor {
     /**
      * Main for test
      */
+    @SuppressFBWarnings(
+            value = "LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE",
+            justification = "Only used in tests")
     public static void main(String[] args) throws Exception {
         Logger l = Logger.getLogger(MemoryMonitor.class.getPackage().getName());
         l.setLevel(Level.FINE);
