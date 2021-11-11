@@ -62,7 +62,7 @@ Total Paging Space   Percent Used
          */
 
         try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
-            String line = null;
+            String line;
             while ((line = r.readLine()) != null) {
                 Matcher m = SWAP.matcher(line);
                 if (m.find()) {
@@ -105,7 +105,7 @@ kthr    memory              page              faults        cpu
 
          */
         try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
-            String line = null;
+            String line;
             while ((line = r.readLine()) != null) {
                 Matcher m = MEM_TOTAL.matcher(line);
                 if (m.find()) {
