@@ -23,7 +23,7 @@
  */
 package org.jvnet.hudson;
 
-import org.graalvm.compiler.core.common.SuppressFBWarnings;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
