@@ -69,6 +69,7 @@ public class MemoryUsage implements Serializable {
             throw new IOException("No data available");
     }
 
+    @Override
     public String toString() {
         return String.format("Memory:%d/%dMB  Swap:%d/%dMB",
             toMB(availablePhysicalMemory),

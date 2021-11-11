@@ -38,6 +38,7 @@ import java.util.List;
  * @author Kohsuke Kawaguchi
 */
 public final class Windows extends MemoryMonitor {
+    @Override
     public MemoryUsage monitor() {
         MEMORYSTATUSEX mse = new MEMORYSTATUSEX();
         Kernel32.INSTANCE.GlobalMemoryStatusEx(mse);

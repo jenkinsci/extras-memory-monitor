@@ -43,6 +43,7 @@ final class Top extends AbstractMemoryMonitorImpl {
     private boolean macOsTopFailed;
     private boolean plainTopFailed;
 
+    @Override
     public MemoryUsage monitor() throws IOException {
         if(!macOsTopFailed) {
             // MacOS X doesn't understand the -b option (for batch mode),

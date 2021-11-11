@@ -35,6 +35,7 @@ import java.util.Arrays;
  * @author Kohsuke Kawaguchi
  */
 final class ProcMemInfo extends MemoryMonitor {
+    @Override
     @SuppressFBWarnings(value = "DM_DEFAULT_ENCODING", justification = "FileReader(String, Charset) requires Java 11")
     public MemoryUsage monitor() throws IOException {
         try (BufferedReader r = new BufferedReader(new FileReader("/proc/meminfo"))) {
