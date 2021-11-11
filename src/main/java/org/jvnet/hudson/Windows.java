@@ -66,7 +66,7 @@ public final class Windows extends MemoryMonitor {
         public long ullAvailExtendedVirtual;
 
         @Override
-        protected List getFieldOrder() {
+        protected List<String> getFieldOrder() {
             return Arrays.asList("dwLength", "dwMemoryLoad", "ullTotalPhys",
                 "ullAvailPhys", "ullTotalPageFile", "ullAvailPageFile",
                 "ullTotalVirtual", "ullAvailVirtual", "ullAvailExtendedVirtual");
