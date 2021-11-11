@@ -37,8 +37,7 @@ import java.util.Arrays;
 final class ProcMemInfo extends MemoryMonitor {
     @SuppressFBWarnings(value = "DM_DEFAULT_ENCODING", justification = "FileReader(String, Charset) requires Java 11")
     public MemoryUsage monitor() throws IOException {
-        BufferedReader r = new BufferedReader(new FileReader("/proc/meminfo"));
-        try {
+        try (BufferedReader r = new BufferedReader(new FileReader("/proc/meminfo"))) {
             long[] values = new long[4];
             Arrays.fill(values,-1);
 
@@ -64,8 +63,6 @@ final class ProcMemInfo extends MemoryMonitor {
             }
 
             return new MemoryUsage(values);
-        } finally {
-            r.close();
         }
     }
 

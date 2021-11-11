@@ -54,7 +54,6 @@ public class Aix extends AbstractMemoryMonitorImpl {
     private long[] getSwap() throws IOException {
         long[] v = new long[] { -1, -1 };
         Process proc = startProcess("lsps", "-s");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
         /*
      $ lsps -s
 Total Paging Space   Percent Used
@@ -62,8 +61,8 @@ Total Paging Space   Percent Used
 
          */
 
-        String line = null;
-        try {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
+            String line = null;
             while ((line = r.readLine()) != null) {
                 Matcher m = SWAP.matcher(line);
                 if (m.find()) {
@@ -79,8 +78,6 @@ Total Paging Space   Percent Used
                 }
             }
             return v;
-        } finally {
-            r.close();
         }
     }
 
@@ -96,7 +93,6 @@ Total Paging Space   Percent Used
     private long[] getMemUsed() throws IOException {
         long[] v = new long[] { -1, -1 };
         Process proc = startProcess("vmstat");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
         /*
 $ vmstat
 
@@ -108,8 +104,8 @@ kthr    memory              page              faults        cpu
  1  1 4986615 96970   0   0   0   0   12   0  34 4619 4005  2  1 98  0
 
          */
-        String line = null;
-        try {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
+            String line = null;
             while ((line = r.readLine()) != null) {
                 Matcher m = MEM_TOTAL.matcher(line);
                 if (m.find()) {
@@ -128,8 +124,6 @@ kthr    memory              page              faults        cpu
                 }
             }
             return v;            
-        } finally {
-            r.close();
         }
     }
 

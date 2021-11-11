@@ -49,8 +49,7 @@ public class Solaris extends AbstractMemoryMonitorImpl {
 
     private long getTotalPhysicalMemory() throws IOException {
         Process proc = startProcess("/usr/sbin/prtdiag");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
-        try {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
             String line;
             while ((line=r.readLine())!=null) {
                 if (line.contains("Memory size:")) {
@@ -59,15 +58,12 @@ public class Solaris extends AbstractMemoryMonitorImpl {
                 }
             }
             return -1;
-        } finally {
-            r.close();
         }
     }
 
     private long getAvailablePhysicalMemory() throws IOException {
         Process proc = startProcess("vmstat");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
-        try {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
             String line;
             while ((line=r.readLine())!=null) {
                 if (NUMBER_ONLY.matcher(line).matches()) {
@@ -75,8 +71,6 @@ public class Solaris extends AbstractMemoryMonitorImpl {
                 }
             }
             return -1;
-        } finally {
-            r.close();
         }
     }
 
@@ -86,14 +80,13 @@ public class Solaris extends AbstractMemoryMonitorImpl {
     private long[] getSwap() throws IOException {
         long[] v = new long[]{-1,-1};
         Process proc = startProcess("/usr/sbin/swap","-s");
-        BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
         /* output
 
             $ uname -a; swap -s
             SunOS kohsuke2 5.9 Generic_112233-12 sun4u sparc SUNW,Sun-Blade-2500 Solaris
             total: 800296k bytes allocated + 181784k reserved = 982080k used, 6014528k available
           */
-        try {
+        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
             String line = r.readLine().toLowerCase();
 
             Matcher m = USED_SWAP.matcher(line);
@@ -110,8 +103,6 @@ public class Solaris extends AbstractMemoryMonitorImpl {
             if (v[0]!=-1 && v[1]!=-1)
                 v[0] += v[1];
             return v;
-        } finally {
-            r.close();
         }
     }
 
