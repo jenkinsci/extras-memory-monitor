@@ -20,7 +20,6 @@
     <changelist>-SNAPSHOT</changelist>
     <java.level>8</java.level>
     <gitHubRepo>jenkinsci/extras-${project.artifactId}</gitHubRepo>
-    <spotbugs.threshold>High</spotbugs.threshold> <!-- TODO fix the remaining warnings and remove this -->
   </properties>
 
   <build>
