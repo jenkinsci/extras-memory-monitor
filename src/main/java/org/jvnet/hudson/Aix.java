@@ -44,7 +44,7 @@ public class Aix extends AbstractMemoryMonitorImpl {
         return new MemoryUsage(m[0], m[1], v[0], v[1]);
     }
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         System.out.println(MemoryMonitor.get().monitor());
     }
 

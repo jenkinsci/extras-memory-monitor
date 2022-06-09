@@ -100,7 +100,7 @@ public abstract class MemoryMonitor {
     @SuppressFBWarnings(
             value = "LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE",
             justification = "Only used in tests")
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) throws IOException {
         Logger l = Logger.getLogger(MemoryMonitor.class.getPackage().getName());
         l.setLevel(Level.FINE);
         ConsoleHandler h = new ConsoleHandler();
