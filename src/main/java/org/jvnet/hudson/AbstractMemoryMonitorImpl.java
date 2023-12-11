@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2008-2011, Sun Microsystems, Inc., Kohsuke Kawaguchi, 
+ * Copyright (c) 2008-2011, Sun Microsystems, Inc., Kohsuke Kawaguchi,
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,26 +30,26 @@ abstract class AbstractMemoryMonitorImpl extends MemoryMonitor {
     protected long parse(String token) {
         token = token.toLowerCase().trim();
         long multiplier = 1;
-        if(token.endsWith("b"))
+        if (token.endsWith("b")) {
             token = cutTail(token);
-        if(token.endsWith("k")) {
+        }
+        if (token.endsWith("k")) {
             multiplier = 1024L;
             token = cutTail(token);
         }
-        if(token.endsWith("m")) {
-            multiplier = 1024L*1024;
+        if (token.endsWith("m")) {
+            multiplier = 1024L * 1024;
             token = cutTail(token);
         }
-        if(token.endsWith("g")) {
-            multiplier = 1024L*1024*1024;
+        if (token.endsWith("g")) {
+            multiplier = 1024L * 1024 * 1024;
             token = cutTail(token);
         }
 
-        return (long)(Float.parseFloat(token)*multiplier);
+        return (long) (Float.parseFloat(token) * multiplier);
     }
 
     protected String cutTail(String token) {
-        return token.substring(0,token.length()-1);
+        return token.substring(0, token.length() - 1);
     }
-
 }

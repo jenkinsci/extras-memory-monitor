@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2008-2011, Sun Microsystems, Inc., Kohsuke Kawaguchi, 
+ * Copyright (c) 2008-2011, Sun Microsystems, Inc., Kohsuke Kawaguchi,
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -56,7 +56,8 @@ public class MemoryUsage implements Serializable {
      */
     public final long availableSwapSpace;
 
-    public MemoryUsage(long totalPhysicalMemory, long availablePhysicalMemory, long totalSwapSpace, long availableSwapSpace) {
+    public MemoryUsage(
+            long totalPhysicalMemory, long availablePhysicalMemory, long totalSwapSpace, long availableSwapSpace) {
         this.totalPhysicalMemory = totalPhysicalMemory;
         this.availablePhysicalMemory = availablePhysicalMemory;
         this.totalSwapSpace = totalSwapSpace;
@@ -64,27 +65,32 @@ public class MemoryUsage implements Serializable {
     }
 
     MemoryUsage(long[] v) throws IOException {
-        this(v[0],v[1],v[2],v[3]);
-        if(!hasData(v))
+        this(v[0], v[1], v[2], v[3]);
+        if (!hasData(v)) {
             throw new IOException("No data available");
+        }
     }
 
     @Override
     public String toString() {
-        return String.format("Memory:%d/%dMB  Swap:%d/%dMB",
-            toMB(availablePhysicalMemory),
-            toMB(totalPhysicalMemory),
-            toMB(availableSwapSpace),
-            toMB(totalSwapSpace));        
+        return String.format(
+                "Memory:%d/%dMB  Swap:%d/%dMB",
+                toMB(availablePhysicalMemory),
+                toMB(totalPhysicalMemory),
+                toMB(availableSwapSpace),
+                toMB(totalSwapSpace));
     }
 
     private static long toMB(long l) {
-        return l/(1024*1024);
+        return l / (1024 * 1024);
     }
 
     /*package*/ static boolean hasData(long[] values) {
-        for (long v : values)
-            if(v!=-1)   return true;
+        for (long v : values) {
+            if (v != -1) {
+                return true;
+            }
+        }
         return false;
     }
 

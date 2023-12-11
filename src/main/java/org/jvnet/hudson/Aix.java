@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 /**
  * AIX
- * 
+ *
  * @author qxodream@gmail.com
  */
 public class Aix extends AbstractMemoryMonitorImpl {
@@ -52,16 +52,17 @@ public class Aix extends AbstractMemoryMonitorImpl {
      * Returns total/availablae.
      */
     private long[] getSwap() throws IOException {
-        long[] v = new long[] { -1, -1 };
+        long[] v = new long[] {-1, -1};
         Process proc = startProcess("lsps", "-s");
         /*
-     $ lsps -s
-Total Paging Space   Percent Used
-      45568MB              17%
+             $ lsps -s
+        Total Paging Space   Percent Used
+              45568MB              17%
 
-         */
+                 */
 
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
+        try (BufferedReader r =
+                new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
             String line;
             while ((line = r.readLine()) != null) {
                 Matcher m = SWAP.matcher(line);
@@ -73,7 +74,7 @@ Total Paging Space   Percent Used
                     v[0] = totalSwap;
                     if (used > 0) {
                         v[1] = (totalSwap / 100) * (100 - used);
-                    }        
+                    }
                     break;
                 }
             }
@@ -91,20 +92,21 @@ Total Paging Space   Percent Used
     }
 
     private long[] getMemUsed() throws IOException {
-        long[] v = new long[] { -1, -1 };
+        long[] v = new long[] {-1, -1};
         Process proc = startProcess("vmstat");
         /*
-$ vmstat
+        $ vmstat
 
-System configuration: lcpu=16 mem=25920MB
+        System configuration: lcpu=16 mem=25920MB
 
-kthr    memory              page              faults        cpu
------ ----------- ------------------------ ------------ -----------
- r  b   avm   fre  re  pi  po  fr   sr  cy  in   sy  cs us sy id wa
- 1  1 4986615 96970   0   0   0   0   12   0  34 4619 4005  2  1 98  0
+        kthr    memory              page              faults        cpu
+        ----- ----------- ------------------------ ------------ -----------
+         r  b   avm   fre  re  pi  po  fr   sr  cy  in   sy  cs us sy id wa
+         1  1 4986615 96970   0   0   0   0   12   0  34 4619 4005  2  1 98  0
 
-         */
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
+                 */
+        try (BufferedReader r =
+                new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
             String line;
             while ((line = r.readLine()) != null) {
                 Matcher m = MEM_TOTAL.matcher(line);
@@ -112,18 +114,18 @@ kthr    memory              page              faults        cpu
                     long mem = Long.parseLong(m.group(1));
                     String unit = m.group(2);
                     mem = getSize(mem, unit);
-                    v[0]=mem;
+                    v[0] = mem;
                     continue;
                 }
                 m = MEM_USED.matcher(line);
                 if (m.find()) {
-                    //long used = Long.parseLong(m.group(1));
+                    // long used = Long.parseLong(m.group(1));
                     long free = Long.parseLong(m.group(2));
-                    v[1] =  free * 4096;//v[0] == -1 ?  free * 4096 : ( v[0] - used*4096);
+                    v[1] = free * 4096; // v[0] == -1 ?  free * 4096 : ( v[0] - used*4096);
                     break;
                 }
             }
-            return v;            
+            return v;
         }
     }
 

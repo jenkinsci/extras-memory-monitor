@@ -10,12 +10,14 @@ import org.junit.Test;
  */
 public class MemoryMonitorTest {
 
-    @Test public void monitor() throws IOException {
+    @Test
+    public void monitor() throws IOException {
         MemoryUsage data = MemoryMonitor.get().monitor();
         System.out.println(data);
     }
 
-    @Test public void top() throws IOException {
+    @Test
+    public void top() throws IOException {
         Assume.assumeFalse("Windows cannot run this test", isWindows());
         MemoryUsage data = new Top().monitor();
         System.out.println(data);

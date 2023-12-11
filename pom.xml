@@ -33,6 +33,7 @@
     <revision>1.13</revision>
     <changelist>-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/extras-${project.artifactId}</gitHubRepo>
+    <spotless.check.skip>false</spotless.check.skip>
   </properties>
 
   <dependencies>

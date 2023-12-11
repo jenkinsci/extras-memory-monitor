@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2008-2011, Sun Microsystems, Inc., Kohsuke Kawaguchi, 
+ * Copyright (c) 2008-2011, Sun Microsystems, Inc., Kohsuke Kawaguchi,
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,6 @@
 package org.jvnet.hudson;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.ConsoleHandler;
@@ -32,7 +31,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Encapsulates how to compute {@link MemoryUsage}. 
+ * Encapsulates how to compute {@link MemoryUsage}.
  *
  * @author Kohsuke Kawaguchi
  */
@@ -55,19 +54,22 @@ public abstract class MemoryMonitor {
      *      if no applicable implementation is found.
      */
     public static MemoryMonitor get() throws IOException {
-        if(INSTANCE==null)
+        if (INSTANCE == null) {
             INSTANCE = obtain();
+        }
         return INSTANCE;
     }
 
     private static MemoryMonitor obtain() throws IOException {
-        if(File.pathSeparatorChar==';')
+        if (File.pathSeparatorChar == ';') {
             return new Windows();
+        }
 
-        if(new File("/proc/meminfo").exists())
-            return new ProcMemInfo();   // Linux has this. Exactly since when, I don't know.
+        if (new File("/proc/meminfo").exists()) {
+            return new ProcMemInfo(); // Linux has this. Exactly since when, I don't know.
+        }
         final String osName = System.getProperty("os.name");
-        if("AIX".equals(osName)){
+        if ("AIX".equals(osName)) {
             Aix aix = new Aix();
             aix.monitor();
             return aix;
@@ -86,20 +88,21 @@ public abstract class MemoryMonitor {
             Solaris solaris = new Solaris();
             solaris.monitor();
             return solaris;
-        } catch(Throwable t) {
+        } catch (Throwable t) {
             // next
         }
 
-        throw new IOException(String.format("No suitable implementation found: os.name=%s os.arch=%s sun.arch.data.model=%s",
-                System.getProperty("os.name"),System.getProperty("os.arch"),System.getProperty("sun.arch.data.model")));
+        throw new IOException(String.format(
+                "No suitable implementation found: os.name=%s os.arch=%s sun.arch.data.model=%s",
+                System.getProperty("os.name"),
+                System.getProperty("os.arch"),
+                System.getProperty("sun.arch.data.model")));
     }
 
     /**
      * Main for test
      */
-    @SuppressFBWarnings(
-            value = "LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE",
-            justification = "Only used in tests")
+    @SuppressFBWarnings(value = "LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE", justification = "Only used in tests")
     public static void main(String[] args) throws IOException {
         Logger l = Logger.getLogger(MemoryMonitor.class.getPackage().getName());
         l.setLevel(Level.FINE);
@@ -108,7 +111,7 @@ public abstract class MemoryMonitor {
         l.addHandler(h);
 
         MemoryMonitor t = get();
-        System.out.println("implementation is "+t.getClass().getName());
+        System.out.println("implementation is " + t.getClass().getName());
         System.out.println(t.monitor());
     }
 
