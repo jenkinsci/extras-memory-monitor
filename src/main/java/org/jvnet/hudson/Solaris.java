@@ -1,7 +1,7 @@
 /*
  * The MIT License
  *
- * Copyright (c) 2008-2011, Sun Microsystems, Inc., Kohsuke Kawaguchi, 
+ * Copyright (c) 2008-2011, Sun Microsystems, Inc., Kohsuke Kawaguchi,
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,7 +31,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * For Solaris, where top(1) is an optional install. 
+ * For Solaris, where top(1) is an optional install.
  *
  * @author Kohsuke Kawaguchi
  */
@@ -40,20 +40,17 @@ public class Solaris extends AbstractMemoryMonitorImpl {
     @Override
     public MemoryUsage monitor() throws IOException {
         long[] v = getSwap();
-        return new MemoryUsage(
-            getTotalPhysicalMemory(),
-            getAvailablePhysicalMemory(),
-            v[0],v[1] 
-        );
+        return new MemoryUsage(getTotalPhysicalMemory(), getAvailablePhysicalMemory(), v[0], v[1]);
     }
 
     private long getTotalPhysicalMemory() throws IOException {
         Process proc = startProcess("/usr/sbin/prtdiag");
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
+        try (BufferedReader r =
+                new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
             String line;
-            while ((line=r.readLine())!=null) {
+            while ((line = r.readLine()) != null) {
                 if (line.contains("Memory size:")) {
-                    line = line.substring(line.indexOf(':')+1).trim();
+                    line = line.substring(line.indexOf(':') + 1).trim();
                     return parse(line);
                 }
             }
@@ -63,11 +60,12 @@ public class Solaris extends AbstractMemoryMonitorImpl {
 
     private long getAvailablePhysicalMemory() throws IOException {
         Process proc = startProcess("vmstat");
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
+        try (BufferedReader r =
+                new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
             String line;
-            while ((line=r.readLine())!=null) {
+            while ((line = r.readLine()) != null) {
                 if (NUMBER_ONLY.matcher(line).matches()) {
-                    return Long.parseLong(line.trim().split(" +")[4])*1024;
+                    return Long.parseLong(line.trim().split(" +")[4]) * 1024;
                 }
             }
             return -1;
@@ -78,15 +76,16 @@ public class Solaris extends AbstractMemoryMonitorImpl {
      * Returns total/availablae.
      */
     private long[] getSwap() throws IOException {
-        long[] v = new long[]{-1,-1};
-        Process proc = startProcess("/usr/sbin/swap","-s");
+        long[] v = new long[] {-1, -1};
+        Process proc = startProcess("/usr/sbin/swap", "-s");
         /* output
 
-            $ uname -a; swap -s
-            SunOS kohsuke2 5.9 Generic_112233-12 sun4u sparc SUNW,Sun-Blade-2500 Solaris
-            total: 800296k bytes allocated + 181784k reserved = 982080k used, 6014528k available
-          */
-        try (BufferedReader r = new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
+          $ uname -a; swap -s
+          SunOS kohsuke2 5.9 Generic_112233-12 sun4u sparc SUNW,Sun-Blade-2500 Solaris
+          total: 800296k bytes allocated + 181784k reserved = 982080k used, 6014528k available
+        */
+        try (BufferedReader r =
+                new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()))) {
             String line = r.readLine();
             if (line == null) {
                 throw new IOException("no output from /usr/sbin/swap -s");
@@ -96,17 +95,18 @@ public class Solaris extends AbstractMemoryMonitorImpl {
 
             Matcher m = USED_SWAP.matcher(line);
             if (m.find()) {
-                v[0] = Long.parseLong(m.group(1))*1024;
+                v[0] = Long.parseLong(m.group(1)) * 1024;
             }
 
             m = AVAILABLE_SWAP.matcher(line);
             if (m.find()) {
-                v[1] = Long.parseLong(m.group(1))*1024;
+                v[1] = Long.parseLong(m.group(1)) * 1024;
             }
 
             // we want total/available, not used/available.
-            if (v[0]!=-1 && v[1]!=-1)
+            if (v[0] != -1 && v[1] != -1) {
                 v[0] += v[1];
+            }
             return v;
         }
     }
