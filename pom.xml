@@ -9,7 +9,7 @@
   </parent>
 
   <artifactId>memory-monitor</artifactId>
-  <version>1.13</version>
+  <version>${revision}${changelist}</version>
 
   <name>Memory Monitor</name>
   <description>Code for monitoring memory/swap usage</description>
@@ -25,12 +25,12 @@
   <scm>
     <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
     <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
-    <tag>memory-monitor-1.13</tag>
+    <tag>${scmTag}</tag>
     <url>https://github.com/${gitHubRepo}</url>
   </scm>
 
   <properties>
-    <revision>1.13</revision>
+    <revision>1.14</revision>
     <changelist>-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/extras-${project.artifactId}</gitHubRepo>
     <spotless.check.skip>false</spotless.check.skip>
