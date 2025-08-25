@@ -1,24 +1,25 @@
 package org.jvnet.hudson;
 
+import static org.junit.jupiter.api.Assumptions.assumeFalse;
+
 import java.io.File;
 import java.io.IOException;
-import org.junit.Assume;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Kohsuke Kawaguchi
  */
-public class MemoryMonitorTest {
+class MemoryMonitorTest {
 
     @Test
-    public void monitor() throws IOException {
+    void monitor() throws IOException {
         MemoryUsage data = MemoryMonitor.get().monitor();
         System.out.println(data);
     }
 
     @Test
-    public void top() throws IOException {
-        Assume.assumeFalse("Windows cannot run this test", isWindows());
+    void top() throws IOException {
+        assumeFalse(isWindows(), "Windows cannot run this test");
         MemoryUsage data = new Top().monitor();
         System.out.println(data);
     }

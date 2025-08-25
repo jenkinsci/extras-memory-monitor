@@ -34,6 +34,7 @@
     <changelist>-SNAPSHOT</changelist>
     <gitHubRepo>jenkinsci/extras-${project.artifactId}</gitHubRepo>
     <spotless.check.skip>false</spotless.check.skip>
+    <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
   </properties>
 
   <dependencies>
@@ -54,8 +55,8 @@
       <version>5.14.0</version>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>
