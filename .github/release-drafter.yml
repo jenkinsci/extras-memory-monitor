@@ -1,4 +1,4 @@
 # https://github.com/jenkinsci/.github/blob/master/.github/release-drafter.adoc
 
-_extends: jenkinsci/.github:.github/release-drafter.yml
+_extends: github:jenkinsci/.github:/.github/release-drafter.yml
 tag-template: memory-monitor-$NEXT_MINOR_VERSION
