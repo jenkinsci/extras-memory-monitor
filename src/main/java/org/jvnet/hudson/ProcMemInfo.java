@@ -23,7 +23,6 @@
  */
 package org.jvnet.hudson;
 
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -35,7 +34,6 @@ import java.util.Arrays;
  */
 final class ProcMemInfo extends MemoryMonitor {
     @Override
-    @SuppressFBWarnings(value = "DM_DEFAULT_ENCODING", justification = "FileReader(String, Charset) requires Java 11")
     public MemoryUsage monitor() throws IOException {
         try (BufferedReader r = new BufferedReader(new FileReader("/proc/meminfo"))) {
             long[] values = new long[4];
