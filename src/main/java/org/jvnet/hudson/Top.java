@@ -93,19 +93,33 @@ final class Top extends AbstractMemoryMonitorImpl {
         proc.getOutputStream().close();
 
         // obtain first 16 lines, then kill 'top'
-        // output is converted to lower case to simplify matching.
         List<String> lines = new ArrayList<>();
         {
             BufferedReader in =
                     new BufferedReader(new InputStreamReader(proc.getInputStream(), Charset.defaultCharset()));
             String line;
             while ((line = in.readLine()) != null && lines.size() < 16) {
-                line = ESCAPE_SEQUENCE.matcher(line.toLowerCase()).replaceAll("");
                 LOGGER.fine("| " + line);
                 lines.add(line);
             }
             proc.destroy();
             in.close();
+        }
+
+        return parseLines(lines);
+    }
+
+    /**
+     * Parses the first lines of the output of <tt>top</tt>.
+     *
+     * @return
+     *      null if no line carries a memory figure.
+     */
+    /*package*/ MemoryUsage parseLines(List<String> rawLines) throws IOException {
+        // output is converted to lower case to simplify matching.
+        List<String> lines = new ArrayList<>();
+        for (String rawLine : rawLines) {
+            lines.add(ESCAPE_SEQUENCE.matcher(rawLine.toLowerCase()).replaceAll(""));
         }
 
         long[] values = new long[6];
@@ -296,6 +310,11 @@ final class Top extends AbstractMemoryMonitorImpl {
     PID    COMMAND          %CPU TIME     #TH  #WQ #PORTS #MREGS RPRVT  RSHRD  RSIZE  VPRVT  VSIZE  PGRP  PPID  STATE    UID FAULTS    COW      MSGSENT    MSGRECV    SYSBSD    SYSMACH    CSW        PAGEINS USER
     31496  top              0.0  00:00.13 1/1  0   21+    32+    1004K+ 336K+  1540K+ 17M+   2378M+ 31496 30986 running  0   1615+     52+      74693+     37346+     489+      37492+     13+        0       root
     31493  taskgated        0.0  00:00.00 2    0   25+    28+    428K+  324K+  1000K+ 27M+   2387M+ 31493 1     sleeping 0   380+      62+      140+       60+        176+      109+       23+        0       root
+
+    Since Mac OS X 10.9 (memory compression), the PhysMem line says "unused" where it used to say "free".
+    % top -S -l1      (macOS 27.0.1)
+    PhysMem: 31G used (3666M wired, 8934M compressor), 374M unused.
+    Swap: 2653M + 1443M free.
     */
 
     // comparison is done by first converting all text to lower case
@@ -312,7 +331,8 @@ final class Top extends AbstractMemoryMonitorImpl {
         new Pattern[] {
             Pattern.compile("^mem(?:ory)?:.* ([0-9.]+[kmgb]) free"),
             Pattern.compile("^([kmg])i?b mem(?:ory)?:.* ([0-9.]+) free"), // Linux procps (>= 3.3)
-            Pattern.compile("^physmem:.* ([0-9.]+[kmgb]) free") // Mac OS X
+            Pattern.compile("^physmem:.* ([0-9.]+[kmgb]) free"), // Mac OS X up to 10.8
+            Pattern.compile("^physmem:.* ([0-9.]+[kmgb]) unused") // Mac OS X 10.9 and later
         },
 
         // total swap memory
